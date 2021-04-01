@@ -3,9 +3,7 @@
 function updateSubtotal(product) {
   let price = parseFloat(product.querySelector(".price span").innerText);
   let quantity = parseInt(product.querySelector(".quantity input").value);
-
   let subtotalPrice = price * quantity;
-
   let spanSubtotalPrice = product.querySelector(".subtotal span");
   spanSubtotalPrice.innerText = subtotalPrice;
 
@@ -31,28 +29,54 @@ function calculateAll() {
   }
 
   document.querySelector("#total-value span").innerText = totalPrice;
-
-  // ITERATION 3
-  //... your code goes here
 }
 
 // ITERATION 4
 
 function removeProduct(event) {
-  const target = event.currentTarget;
+  const target = event.currentTarget.parentNode.parentNode;
   console.log("The target in remove is:", target);
-  //... your code goes here
+  document.querySelector("tbody").removeChild(target);
+  calculateAll();
 }
 
 // ITERATION 5
 
-function createProduct() {
+function createProduct(event) {
+  let target = event.currentTarget.parentNode.parentNode;
+  let newItemName = target.querySelector("input").value;
+  let newItemPrice = target.querySelectorAll("input")[1].value;
+
+  const newItem = `<tr class="product">
+          <td class="name">
+            <span>${newItemName}</span>
+          </td>
+          <td class="price">$<span>${newItemPrice}</span></td>
+          <td class="quantity">
+            <input type="number" value="0" min="0" placeholder="Quantity" />
+          </td>
+          <td class="subtotal">$<span>0</span></td>
+          <td class="action">
+            <button class="btn btn-remove">Remove</button>
+          </td>
+        </tr>`;
+
+  document.querySelector("tbody").insertAdjacentHTML("beforeend", newItem);
+  let removeBtnList = document.querySelectorAll(".btn-remove");
+  for (let i = 0; i < removeBtnList.length; i++) {
+    removeBtnList[i].addEventListener("click", (e) => removeProduct(e));
+  }
+
   //... your code goes here
 }
 
 window.addEventListener("load", () => {
   const calculatePricesBtn = document.getElementById("calculate");
   calculatePricesBtn.addEventListener("click", calculateAll);
-
-  //... your code goes here
+  let removeBtnList = document.querySelectorAll(".btn-remove");
+  for (let i = 0; i < removeBtnList.length; i++) {
+    removeBtnList[i].addEventListener("click", (e) => removeProduct(e));
+  }
+  let createProductBtn = document.querySelector("#create");
+  createProductBtn.addEventListener("click", (e) => createProduct(e));
 });
